@@ -1,0 +1,1 @@
+create table chart(id int identity,Productname varchar(60),productCount int)

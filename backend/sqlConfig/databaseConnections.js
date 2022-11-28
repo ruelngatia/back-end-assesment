@@ -1,13 +1,13 @@
 const sql = require('mssql')
-const env = require('dotenv')
-env.config()
+require('dotenv').config()
+
 
 
 
 const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS ,
-    database: process.env.DB_NAME,
+    user: "sa",
+    password: "softWARE" ,
+    database: "E-commerce assesment",
     server: 'localhost',
     pool: {
         max: 10,
@@ -20,6 +20,7 @@ const config = {
     }
 }
 
+// console.log(process.env);
 
 sql.connect(config).then((pool)=>{
     if(pool.connected){

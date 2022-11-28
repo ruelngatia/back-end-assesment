@@ -1,4 +1,4 @@
-const config = require('../sqlConnections/databaseConnections')
+const config = require('../sqlConfig/databaseConnections')
 const sql = require('mssql')
 
 
@@ -6,7 +6,6 @@ const sql = require('mssql')
 
     constructor(){
         this.connectionPool = this.createConnection(config)
-        this.getIndividualProduct()
     }
 
     createConnection = async(config)=>{
@@ -18,22 +17,30 @@ const sql = require('mssql')
         }
     }
 
-    createRequest = async(request,data ={})=>{
-        const key = Object.keys()
-        key.map((item)=>{
-            
+    createRequest = (request,data ={})=>{
+        const keys = Object.keys(data)  
+        keys.map((keyValue)=>{
+           request.input(keyValue,data[keyValue]) 
         })
+        return request
     }
 
-    // getAllProducts = async(procedure)=>{
-    //     let pool = await this.connectionPool
-    //     let results = await (await pool.request().execute('getAllProducts')).recordset
-    //     console.log(results);
-    // }
+    exec = async(storedProcedure,data={})=>{
+        let request = await (await this.connectionPool).request()
+        request = this.createRequest(request,data)
+        let result = await request.execute(storedProcedure)
+        return result
+    }
 
-  
+    query = async(query)=>{
+        let results = await (await this.connectionPool).request().query(query)
+        return results;
+    }
+
 }
 
-module.exports = {exec: new SQLHelper().getAllProducts}
+module.exports = {
+    exec: new SQLHelper().exec,
+    query: new SQLHelper().query,
+}
 
-let a = new SQLHelper()
